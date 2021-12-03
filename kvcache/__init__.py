@@ -54,11 +54,11 @@ class KVCache:
 
         enc_obj = {}
 
-        for k,v in self.cache.get(self.obj):
+        for k,v in self.cache.get(self.obj).items():
             enc_obj[k] = base64.b64encode(v.encode("utf-8")).decode("ascii")
 
         fp = open(f"{self.path}/{self.obj}.cache", "w")
-        fp.write(yaml.dump(self.cache.get(enc_obj), Dumper=yaml.Dumper))
+        fp.write(yaml.dump(enc_obj, Dumper=yaml.Dumper))
         fp.close()
 
     def get(self, key=None, obj=None):
@@ -83,3 +83,16 @@ class KVCache:
             self.cache[self.obj][k] = v
 
         self.write_object_file()
+
+    def get_or_set(self, key, msg=None):
+        if not msg:
+            msg = f"Cache value not found for {key}, enter a value here: "
+
+        val = self.get(key)
+
+        if not val:
+            val = input(msg)
+            kwargs = { key: val }
+            self.set(**kwargs)
+
+        return val
