@@ -55,7 +55,7 @@ class KVCache:
         enc_obj = {}
 
         for k,v in self.cache.get(self.obj):
-            enc_obj[k] = base64.b64encode(v.encode("utf-8"))
+            enc_obj[k] = base64.b64encode(v.encode("utf-8")).decode("ascii")
 
         fp = open(f"{self.path}/{self.obj}.cache", "w")
         fp.write(yaml.dump(self.cache.get(enc_obj), Dumper=yaml.Dumper))
@@ -80,7 +80,6 @@ class KVCache:
             if self.obj not in self.cache:
                 self.cache[self.obj] = {}
 
-            #self.cache[self.obj][k] = base64.b64encode(v.encode("utf-8"))
             self.cache[self.obj][k] = v
 
         self.write_object_file()
